@@ -2,7 +2,12 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from sqlalchemy.ext.declarative import declarative_base
 
-DataBase_URL = "mysql://root:root@localhost:3306/fast_jwt"
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
+
+DataBase_URL = os.getenv("DataBase_URL")
 
 engine = create_engine(DataBase_URL)
 

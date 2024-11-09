@@ -1,6 +1,6 @@
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Request
 from pydantic import BaseModel
 from sqlalchemy.orm import Session
 from starlette import status
@@ -10,13 +10,21 @@ from passlib.context import CryptContext
 from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from jose import jwt, JWTError
 
+import os
+from dotenv import load_dotenv
+
+# from fastapi.responses import RedirectResponse
+
+load_dotenv()
+
 router = APIRouter(
     prefix = '/auth',
     tags = ['auth']
 )
 
-SECRET_KEY = "09d25e094faa6ca2556c818166b7a9563b93f7099f6f0f4caa6cf63b88e8d3e7"
-ALGORITHM = "HS256"
+SECRET_KEY = os.getenv("SECRET_KEY")
+ALGORITHM = os.getenv("ALGORITHM")
+ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
@@ -60,7 +68,7 @@ async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm,
     # if not tenant or tenant.tenantname != "Admin": #generating token for admin-only
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized: Only 'Admin' is allowed to log in.")
     
-    token = create_access_token(tenant.tenantname, tenant.id, timedelta(minutes=1)) #fun.  | tenantname over here is w.r.to models.py
+    token = create_access_token(tenant.tenantname, tenant.id, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)) #fun.  | tenantname over here is w.r.to models.py
     
     return {"access_token":token, "token_type":"bearer"}
     

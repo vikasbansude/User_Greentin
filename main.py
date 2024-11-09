@@ -1,4 +1,5 @@
-from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi import FastAPI, Depends, HTTPException, Request, status
+from fastapi.security import OAuth2PasswordRequestForm
 import models
 from typing import Annotated, List
 from database import SessionLocal,engine
@@ -10,6 +11,13 @@ from sqlalchemy.orm import Session
 import auth
 from models import Tenants
 from pydantic import BaseModel
+
+# from starlette.middleware.base import BaseHTTPMiddleware
+
+# import SimpleMiddleware
+# from middleware import SimpleMiddleware 
+from middleware import AdvMiddleware 
+
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -33,6 +41,15 @@ def get_db():
 db_dependency = Annotated[Session, Depends(get_db)]
 tenant_dependency = Annotated[dict, Depends(get_current_tenant)]
 
+
+# app.add_middleware(SimpleMiddleware)
+app.add_middleware(AdvMiddleware)
+
+@app.get("/test")
+async def test_exception():
+    raise HTTPException(status_code=403, detail="Unauthorized access")
+
+
 @app.get("/", status_code=status.HTTP_200_OK)
 async def tenant(tenant:tenant_dependency, db:db_dependency):
     if tenant is None:
@@ -51,16 +68,34 @@ async def tenant(tenant:tenant_dependency, db:db_dependency):
 #     return {"message": f"Hello, {tenant['tenantname']}! You have access to the general endpoint."}
 
 @app.get("/view-all-tenants", status_code=status.HTTP_200_OK)
-async def view_all_tenants(tenant: tenant_dependency, db: Session = Depends(get_db)):
+async def view_all_tenants(request: Request, tenant: tenant_dependency, db: Session = Depends(get_db)):
 
     if tenant["tenantname"] != "Admin":
         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied: Only 'Admin' can view all tenants.")
     
     # Query the database for all tenants
     tenants = db.query(Tenants).all()
+    # if "Authorization" in request.headers:
+    #     return {"msg": request.headers["Authorization"]}
+    # else:
+    #     return {"error": "Authorization header not found"}
     
     # Return a list of tenant names (or other details as required)
     return {"tenants": [{"id": t.id, "tenantname": t.tenantname} for t in tenants]}
+
+
+# ////////////////////
+# @app.get("/view-all-tenants", status_code=status.HTTP_200_OK)
+# async def view_all_tenants(request: Request, db: Session = Depends(get_db)):
+#     tenant = request.state.tenant  # Access tenant info from request state
+    
+#     if tenant["tenantname"] != "Admin":
+#         raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="Access denied: Only 'Admin' can view all tenants.")
+    
+#     tenants = db.query(Tenants).all()
+#     return {"tenants": [{"id": t.id, "tenantname": t.tenantname} for t in tenants]}
+
+# ////////////////////
 
 
 @app.get("/admin-only", status_code=status.HTTP_200_OK)
@@ -70,7 +105,15 @@ async def admin_only_endpoint(tenant: tenant_dependency):
     return {"message": "Welcome, Admin! You have exclusive access to this endpoint."}
 
 
-
+# @app.get("/check-headers")
+# async def check_headers(request: Request):
+#     # Print all headers to see what's included in the request
+#     print(request.headers)
+#     # Optionally, check for the Authorization header specifically
+#     if "accept" in request.headers:
+#         return {"msg": request.headers["accept"]}
+#     else:
+#         return {"error": "Authorization header not found"}
 
 
 
