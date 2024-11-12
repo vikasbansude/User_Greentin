@@ -1,19 +1,26 @@
 from datetime import timedelta, datetime, timezone
 from typing import Annotated
-from fastapi import APIRouter, Depends, HTTPException, Request
-from pydantic import BaseModel
+
+from fastapi import APIRouter, Depends, HTTPException
+from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+
 from sqlalchemy.orm import Session
 from starlette import status
-from database import SessionLocal
-from models import Tenants
+
+from database.models import Tenants
 from passlib.context import CryptContext
-from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
+
 from jose import jwt, JWTError
 
+#importing the dto class
+from dto.token_class import Token
+
+#importing from database
+from database.tenant_database import get_db
+
+# importing files from .env
 import os
 from dotenv import load_dotenv
-
-# from fastapi.responses import RedirectResponse
 
 load_dotenv()
 
@@ -29,35 +36,10 @@ ACCESS_TOKEN_EXPIRE_MINUTES = int(os.getenv("ACCESS_TOKEN_EXPIRE_MINUTES", 15))
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="auth/token")
 
-class CreateTenantRequest(BaseModel):
-    tenantname : str
-    password : str
-    
-class Token(BaseModel):
-    access_token:str
-    token_type:str
-
-def get_db():
-    db = SessionLocal()
-    try:
-        yield db
-    finally:
-        db.close
-
 db_dependency = Annotated[Session, Depends(get_db)]
 
-@router.post("/",status_code=status.HTTP_201_CREATED)
-async def create_tenant(db:db_dependency, create_tenant_request: CreateTenantRequest):
-    create_tenant_model = Tenants(
-        tenantname = create_tenant_request.tenantname,
-        hashed_password = pwd_context.hash(create_tenant_request.password)
-    )
-    db.add(create_tenant_model)
-    db.commit()
-    
-# //////////////////////////////////////////////////////////////////////////////////////////////
-
 # AuthN
+# todo : remove the endpoint (make it a function)
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  db:db_dependency):
@@ -109,7 +91,3 @@ async def get_current_tenant(token: Annotated[str, Depends(oauth2_scheme)]):
         return {'tenantname': tenant_name, 'id': tenant_id}
     except JWTError:
         raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate tenant.')
-    
-# @router.get("/me")
-# async def read_current_tenant(current_tenant: Annotated[dict, Depends(get_current_tenant)]):
-#     return {"tenantname": current_tenant['tenantname'], "id": current_tenant['id']}
