@@ -1,10 +1,10 @@
 from fastapi import FastAPI
-import helper.auth as auth
-# import main
-from api import tenant_controller
-import database.models as models
-from database.tenant_database import engine
-from .middleware import AdvMiddleware 
+from app.auth import auth
+from app.api import tenant_controller
+from app.models import models
+from app.database.tenant_database import engine
+from app.middleware.middleware import AdvMiddleware
+
 
 app = FastAPI()
 
