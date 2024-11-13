@@ -1,14 +1,14 @@
 from fastapi import status, APIRouter
 
 #importing the dto class
-from dto.tenant_class import CreateTenantRequest
-from dto.tenant_class import UpdateTenantRequest
+from app.schemas.tenant_schema import CreateTenantRequest
+from app.schemas.tenant_schema import UpdateTenantRequest
 
 #importing dao package
-from database.dao import tenant_dao
+from app.database.dao import tenant_dao
 
-from database.dao.tenant_dao import db_dependency
-from database.dao.tenant_dao import tenant_dependency
+from app.database.dao.tenant_dao import db_dependency
+from app.database.dao.tenant_dao import tenant_dependency
 
 
 # I have used modular approach for organization

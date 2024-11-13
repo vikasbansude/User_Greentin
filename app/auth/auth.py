@@ -7,16 +7,16 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette import status
 
-from database.models import Tenants
+from app.models.models import Tenants
 from passlib.context import CryptContext
 
 from jose import jwt, JWTError
 
 #importing the dto class
-from dto.token_class import Token
+from app.schemas.token_schema import Token
 
 #importing from database
-from database.tenant_database import get_db
+from app.database.tenant_database import get_db
 
 # importing files from .env
 import os

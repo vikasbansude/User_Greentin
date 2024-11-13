@@ -3,17 +3,17 @@ from typing import Annotated
 from sqlalchemy.orm import Session
 
 #importing the database package
-from database.tenant_database import get_db
-from database.models import Tenants
-import database.models as models
+from app.database.tenant_database import get_db
+from app.models.models import Tenants
+import app.models.models as models
 
 #importing the dto package
-from dto.tenant_class import CreateTenantRequest
-from dto.tenant_class import UpdateTenantRequest
+from app.schemas.tenant_schema import CreateTenantRequest
+from app.schemas.tenant_schema import UpdateTenantRequest
 
 #importing the auth package
-from helper.auth import get_current_tenant
-from helper.auth import pwd_context
+from app.auth.auth import get_current_tenant
+from app.auth.auth import pwd_context
 
 db_dependency = Annotated[Session, Depends(get_db)]
 tenant_dependency = Annotated[dict, Depends(get_current_tenant)]
