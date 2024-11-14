@@ -7,7 +7,7 @@ from fastapi.security import OAuth2PasswordRequestForm, OAuth2PasswordBearer
 from sqlalchemy.orm import Session
 from starlette import status
 
-from app.models.models import Tenants
+from app.models.models import Users
 from passlib.context import CryptContext
 
 from jose import jwt, JWTError
@@ -16,7 +16,7 @@ from jose import jwt, JWTError
 from app.schemas.token_schema import Token
 
 #importing from database
-from app.database.tenant_database import get_db
+from app.database.user_database import get_db
 
 # importing files from .env
 import os
@@ -43,27 +43,27 @@ db_dependency = Annotated[Session, Depends(get_db)]
 @router.post("/token", response_model=Token)
 async def login_for_access_token(form_data: Annotated[OAuth2PasswordRequestForm, Depends()],
                                  db:db_dependency):
-    tenant = authenticate_tenant(form_data.username , form_data.password, db) #fun.  | username is predefined
-    if not tenant:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate tenant")
+    user = authenticate_user(form_data.username , form_data.password, db) #fun.  | username is predefined
+    if not user:
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Could not validate user")
     
-    # if not tenant or tenant.tenantname != "Admin": #generating token for admin-only
+    # if not user or user.username != "Admin": #generating token for admin-only
     #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Unauthorized: Only 'Admin' is allowed to log in.")
     
-    token = create_access_token(tenant.tenantname, tenant.id, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)) #fun.  | tenantname over here is w.r.to models.py
+    token = create_access_token(user.username, user.id, timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)) #fun.  | username over here is w.r.to models.py
     
     return {"access_token":token, "token_type":"bearer"}
     
-def authenticate_tenant(tenantName: str, password: str, db):
-    tenant = db.query(Tenants).filter(Tenants.tenantname == tenantName).first() # | tenantname over here is w.r.to models.py
-    if not tenant:
+def authenticate_user(userName: str, password: str, db):
+    user = db.query(Users).filter(Users.username == userName).first() # | username over here is w.r.to models.py
+    if not user:
         return False
-    if not pwd_context.verify(password, tenant.hashed_password):
+    if not pwd_context.verify(password, user.hashed_password):
         return False
-    return tenant
+    return user
 
-def create_access_token(tenant_name:str, tenant_id: int, expires_delta: timedelta):
-    encode = {'sub' : tenant_name, 'id' : tenant_id}
+def create_access_token(user_name:str, user_id: int, expires_delta: timedelta):
+    encode = {'sub' : user_name, 'id' : user_id}
     expires = datetime.now(timezone.utc) + expires_delta
     encode['exp'] = expires.timestamp()
     # encode.update({'exp':expires})
@@ -72,22 +72,22 @@ def create_access_token(tenant_name:str, tenant_id: int, expires_delta: timedelt
 # /////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 # Decoding the token
-async def get_current_tenant(token: Annotated[str, Depends(oauth2_scheme)]):
+async def get_current_user(token: Annotated[str, Depends(oauth2_scheme)]):
     try:
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
-        tenant_name : str = payload.get('sub')
-        tenant_id : int = payload.get('id')
-        if tenant_name is None or tenant_id is None:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate tenant as its NULL.')
-        #EXAMPLE FOR Restricting PERTICULAR TENANT
-        # if tenant_name == 'Aryan' or tenant_id == 1:
-        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='TENANT - Aryan is not AuthZ.')
+        user_name : str = payload.get('sub')
+        user_id : int = payload.get('id')
+        if user_name is None or user_id is None:
+            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user as its NULL.')
+        #EXAMPLE FOR Restricting PARTICULAR TENANT
+        # if user_name == 'Aryan' or tenant_id == 1:
+        #     raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='User - Aryan is not AuthZ.')
         
-        # if tenant_name != "Aryan":
+        # if user_name != "Aryan":
         #     raise HTTPException(status_code=status.HTTP_403_FORBIDDEN, detail="You do not have permission to access this resource.")
         
         if 'exp' not in payload or payload['exp'] < datetime.now(timezone.utc).timestamp():
             raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Token has expired.')
-        return {'tenantname': tenant_name, 'id': tenant_id}
+        return {'username': user_name, 'id': user_id}
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate tenant.')
+        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail='Could not validate user.')
