@@ -1,0 +1,111 @@
+ENOVATION-ATTENDANCE-API
+   >.vscode
+   >app
+      >__pycache__
+      >api
+	   >__pycache__
+	   __init__.py
+	   tenat_controller.py
+      >auth
+	   >__pycache__
+	   __init__.py
+	   auth.py
+      >database
+	   >__pycache__
+	   >dao
+	      >__pycache__
+	      __init__.py
+	      tenant_dao.py
+	      __init__.py
+	      tenant_database.py 
+      >middleware
+	   >__pycache__
+	   __init__.py
+	   middleware.py
+      >models
+	   >__pycache__
+	   __init__.py
+	   models.py
+      >schemas
+	   >__pycache__
+	   __init__.py
+	   tenant_schema.py
+	   token_schema.py
+      __init__.py
+      main.py
+   .env
+   gitignore
+   requirement.txt
+
+
+########################################################################################################
+
+ENOVATION-ATTENDANCE-API
+   >.vscode
+   >app
+      >__pycache__
+      >api
+	   >__pycache__
+	   __init__.py
+	   user_controller.py
+      >auth
+	   >__pycache__
+	   __init__.py
+	   auth.py
+      >database
+	   >__pycache__
+	   >dao
+	      >__pycache__
+	      __init__.py
+	      user_dao.py
+	      __init__.py
+	      user_database.py 
+      >middleware
+	   >__pycache__
+	   __init__.py
+	   middleware.py
+      >models
+	   >__pycache__
+	   __init__.py
+	   models.py
+      >schemas
+	   >__pycache__
+	   __init__.py
+	   token_schema.py
+	   user_schema.py
+      __init__.py
+      main.py
+   .env
+   .gitignore
+   README.md
+   requirement.txt
+
+
+################################################################################################################
+
+
+FINAL FOLDER STRUCTURE for "tryCleanup" branch.
+
+
+app
+├── api
+│   ├── tenant_controller.py   # from Tenant branch
+│   ├── user_controller.py     # from User branch
+├── auth
+│   └── auth.py                # Ensure only one version if they are identical
+├── database
+│   ├── dao
+│   │   ├── tenant_dao.py      # from Tenant branch
+│   │   └── user_dao.py        # from User branch
+│   ├── tenant_database.py     # from Tenant branch
+│   └── user_database.py       # from User branch
+├── models
+│   └── models.py              # Merge models if they have different fields
+├── schemas
+│   ├── tenant_schema.py       # from Tenant branch
+│   ├── user_schema.py         # from User branch
+│   └── token_schema.py        # Unified if the same in both branches
+└── main.py                    # Adjust main.py to include both sets of routes
+
+      
+      

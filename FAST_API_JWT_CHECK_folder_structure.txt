@@ -1,0 +1,25 @@
+FAST_API_JWT_CHECK
+   >__pycache__
+   >app
+      >api
+	   auth.py
+      >core
+	   config.py
+	   database.py
+	   middlewares.py
+      >models
+	   models.py
+      >schemas
+	   schemas.py
+      main.py
+   >venv
+      >Include
+	   #files
+      >Lib
+	   #files
+      >Scripts
+	   #files
+   .env
+   gitignore
+   requirement.txt
+      

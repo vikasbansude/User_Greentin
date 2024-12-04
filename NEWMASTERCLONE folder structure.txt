@@ -1,0 +1,19 @@
+NEWMASTERCLONE
+> Greentin-Solution
+   >__pycache__
+   >.vscode
+   >app
+       >api
+	   auth.py
+       >core
+	   config.py
+	   database.py
+	   middlewares.py
+       >models
+	   models.py
+       >schemas
+	   schemas.py
+       main.py
+   .env
+   gitignore
+   requirements.text

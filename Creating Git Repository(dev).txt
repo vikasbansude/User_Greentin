@@ -1,0 +1,74 @@
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (master)
+$ git status
+On branch master
+Your branch is up to date with 'origin/master'.
+
+nothing to commit, working tree clean
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (master)
+$ git checkout -b dev
+Switched to a new branch 'dev'
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git pull origin master
+From https://github.com/vikasbansude/Greentin-Solution
+ * branch            master     -> FETCH_HEAD
+Already up to date.
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git status
+On branch dev
+Changes not staged for commit:
+  (use "git add <file>..." to update what will be committed)
+  (use "git restore <file>..." to discard changes in working directory)
+        modified:   main.py
+
+no changes added to commit (use "git add" and/or "git commit -a")
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git diff main.py
+diff --git a/main.py b/main.py
+index e633ae3..79022ad 100644
+--- a/main.py
++++ b/main.py
+@@ -120,8 +120,9 @@ def login_for_access_token(db: Session = Depends(get_db), form_data: OAuth2Passw
+     token_data = {
+         "sub": user.username,
+         "role": user.role  # Ensure this retrieves the user's role correctly
+-    }
+
++    }
++    #comments
+     # Now we pass token_data to create_access_token
+     token = auth.create_access_token(data=token_data, expires_delta=access_token_expires)
+
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git commit -a -m "comment added"
+[dev 1157678] comment added
+ 1 file changed, 2 insertions(+), 1 deletion(-)
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git pull origin master
+From https://github.com/vikasbansude/Greentin-Solution
+ * branch            master     -> FETCH_HEAD
+Already up to date.
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$ git push origin dev
+Enumerating objects: 5, done.
+Counting objects: 100% (5/5), done.
+Delta compression using up to 8 threads
+Compressing objects: 100% (3/3), done.
+Writing objects: 100% (3/3), 306 bytes | 306.00 KiB/s, done.
+Total 3 (delta 2), reused 0 (delta 0), pack-reused 0
+remote: Resolving deltas: 100% (2/2), completed with 2 local objects.
+remote:
+remote: Create a pull request for 'dev' on GitHub by visiting:
+remote:      https://github.com/vikasbansude/Greentin-Solution/pull/new/dev
+remote:
+To https://github.com/vikasbansude/Greentin-Solution.git
+ * [new branch]      dev -> dev
+
+LENOVIO@DESKTOP-D8CL7BO MINGW64 ~/Desktop/newMasterClone/Greentin-Solution (dev)
+$

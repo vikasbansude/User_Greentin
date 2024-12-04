@@ -1,0 +1,31 @@
+FAST_API_JWT_CHECK
+>__pycache__
+>.vscode
+>app
+   >__pycache__
+   >api
+      >__pycache__
+      auth.py
+   >core
+      >__pycache__
+      config.py
+      middlewares.py
+   >database
+      database.py
+   >models
+      >__pycache__
+      models.py
+   >routers
+      router.py
+   >schemas
+      >__pycache__
+      schemas.py
+   >services
+      user_services.py
+   >utils
+      hashing.py
+      token.py
+   main.py
+.env
+gitignore
+requirements.text

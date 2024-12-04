@@ -1,0 +1,40 @@
+i have develop the one API of face recognition attendance system for real life use. 
+cases- we have to develope multiple python modules for this project.
+the models are pydantic model, image processing model, train data model, log in model(user, Admin, MANAGER  , registration model(user, admin, manager ,superuser or superadmin model, face recognition model, employee model, attendance details model, tenant model.
+
+1. pydantic model(main page):
+	a. inthis model multiple classes are available, 	 	TenantCreate(BaseModel), UserCreate(BaseModel), 	UserUpdate(BaseModel), Attendance(BaseModel), 	ImageResponse(BaseModel), TrainingRequest(BaseModel).
+
+2.ImageResponse:
+	a. capturing the - the image capture service interact with camera device to capture the image.
+	b. there are options are available for capture image in live video stream and one by one image capture.
+	c. after image capturing process, captured images are stored in the folder.
+	d. folder for each user is separate and all the user image folder in one base folder.
+
+3. Train Data:
+	a. Each user has its own separate image folder.
+	b. there are options are available for Train all data and train 	manually(this option is for if new user is added then we don't need 	to train all data again, we can train data of that particular user 	only.) 
+	c. After training data is completed , the message will show on the 	window in pop up window("Training data is completed successfully.) 	if any error occured then error message is showing on the 	window("Error occured during traing.)
+
+4. Face Recognition:
+	a. There are two options for camera like Entry Gate Camera and Exit 	Gate camera.
+	b. Admin can select the camera options for the stream, also he can 	play both camera's stream.
+	c. detect the one rectangle around the person's face. 
+	d. while recognizing the face , match the person face with trained 	data images, if data is matched then show the rectangle colour is 	green and also shows the details(name, department, employee id) of 	the person on the top of the rectangle.
+	e. if data is not matched then show the alert message to the admin, 	and 'Unkown person' message on the top of the rectangle(red 	colour).
+	f. stores the attendance of the known person in database with entry 	time.
+	g. employee go outside of the office and comes after some time then 	also stores the outside of the time and working time(based on first 	entry and last entry of the day. 
+
+5. Attendance :
+	a. admin can select one particular employee, after select , there 	are options available like details and Attendance Record. 
+        b. in 'Details' option admin can see all the details( joining date, 	department, id sized 	image, employee id, address, gender, birth 	date) of that employee.
+	c. After select the 'Attendance Record', admin can select the 	year(based on joining date), month and date.
+	d. attendance details are employee id, name, department, entry 	time, exit time, working hours, counts of entry and exit on that 	particular day.
+	e. also there is option for edit attendance, in which admin can 	make changes in attendance.
+	e. Attendance can store in the excel file.
+	f. export , import , update delete attendance record options are 	available for the admin.
+
+	 
+	
+	
+	
